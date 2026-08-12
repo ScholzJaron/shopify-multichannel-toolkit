@@ -1,0 +1,25 @@
+# Rename to indexnow.yml to activate.
+# Set INDEXNOW_KEY and INDEXNOW_HOST under:
+#   Settings > Secrets and variables > Actions
+name: Submit sitemap to IndexNow
+
+on:
+  schedule:
+    - cron: "30 4 * * *"   # 04:30 UTC daily
+  workflow_dispatch:        # lets you trigger a run by hand
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Submit
+        env:
+          INDEXNOW_KEY: ${{ secrets.INDEXNOW_KEY }}
+          INDEXNOW_HOST: ${{ secrets.INDEXNOW_HOST }}
+        run: python src/indexnow_submit.py sitemap
